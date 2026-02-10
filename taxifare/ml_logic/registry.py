@@ -20,12 +20,14 @@ def save_results(params: dict, metrics: dict) -> None:
     # Save params locally
     if params is not None:
         params_path = os.path.join(LOCAL_REGISTRY_PATH, "params", timestamp + ".pickle")
+        os.makedirs(os.path.dirname(params_path), exist_ok=True)
         with open(params_path, "wb") as file:
             pickle.dump(params, file)
 
     # Save metrics locally
     if metrics is not None:
         metrics_path = os.path.join(LOCAL_REGISTRY_PATH, "metrics", timestamp + ".pickle")
+        os.makedirs(os.path.dirname(metrics_path), exist_ok=True)
         with open(metrics_path, "wb") as file:
             pickle.dump(metrics, file)
 
@@ -43,6 +45,7 @@ def save_model(model: keras.Model = None) -> None:
 
     # Save model locally
     model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", f"{timestamp}.h5")
+    os.makedirs(os.path.dirname(model_path), exist_ok=True)
     model.save(model_path)
 
     print("✅ Model saved locally")

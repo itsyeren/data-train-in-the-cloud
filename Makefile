@@ -5,16 +5,16 @@ reinstall_package:
 	@pip install -e .
 
 run_preprocess:
-	python -c 'from taxifare.interface.main import preprocess; preprocess()'
+	bash -c 'set -a; . ./.env; set +a; python -c "from taxifare.interface.main import preprocess; preprocess()"'
 
 run_train:
-	python -c 'from taxifare.interface.main import train; train()'
+	bash -c 'set -a; . ./.env; set +a; python -c "from taxifare.interface.main import train; train()"'
 
 run_pred:
-	python -c 'from taxifare.interface.main import pred; pred()'
+	bash -c 'set -a; . ./.env; set +a; python -c "from taxifare.interface.main import pred; pred()"'
 
 run_evaluate:
-	python -c 'from taxifare.interface.main import evaluate; evaluate()'
+	bash -c 'set -a; . ./.env; set +a; python -c "from taxifare.interface.main import evaluate; evaluate()"'
 
 run_all: run_preprocess run_train run_pred run_evaluate
 

@@ -60,6 +60,7 @@ def get_data_with_cache(
 
         # Store as CSV if the BQ query returned at least one valid line
         if df.shape[0] > 1:
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
             df.to_csv(cache_path, header=data_has_header, index=False)
 
     print(f"✅ Data loaded, with shape {df.shape}")
@@ -83,12 +84,21 @@ def load_data_to_bq(
     print(Fore.BLUE + f"\nSave data to BigQuery @ {full_table_name}...:" + Style.RESET_ALL)
 
     # Load data onto full_table_name
+    client = bigquery.Client(project=gcp_project)
+    table_id = full_table_name
+    job_config = bigquery.LoadJobConfig()
+
+    if truncate:
+        job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+    else:
+        job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND
+
+    load_job = client.load_table_from_dataframe(data, table_id, job_config=job_config)
+    load_job.result()
 
     # 🎯 HINT for "*** TypeError: expected bytes, int found":
     # After preprocessing the data, your original column names are gone (print it to check),
     # so ensure that your column names are *strings* that start with either 
     # a *letter* or an *underscore*, as BQ does not accept anything else
-
-    pass  # YOUR CODE HERE
 
     print(f"✅ Data saved to bigquery, with shape {data.shape}")
